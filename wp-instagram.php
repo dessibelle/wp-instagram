@@ -25,13 +25,17 @@ class WPInstagram {
     const USERNAME_KEY = 'wp_instagram_username';
     const USER_ID_KEY = 'wp_instagram_user_id';
 
-
+    protected static $instance;
     protected static $plugin_slug;
     protected static $auth_redirect_uri;
 
     /**
-     * Constructor
-     */
+     * Constructor. Don't call directly, @see instance() instead.
+     *
+     * @see instance()
+     * @return void
+     * @author Simon Fransson
+     **/
     public function __construct() {
 
         self::$plugin_slug = dirname( plugin_basename( __FILE__ ) );
@@ -45,6 +49,23 @@ class WPInstagram {
 
         self::$auth_redirect_uri = admin_url('admin.php?page=' . self::$plugin_slug);
     }
+
+
+    /**
+     * Singleton accessor, returns the instance
+     *
+     * @return void
+     * @author Simon Fransson
+     **/
+    public static function instance() {
+        if (!isset(self::$instance)) {
+            $c = __CLASS__;
+            self::$instance = new $c();
+        }
+
+        return self::$instance;
+    }
+
 
     protected static function required_capability()
     {
@@ -375,4 +396,4 @@ class WPInstagram {
     }
 }
 
-$wpig = new WPInstagram();
+$wpig = WPInstagram::instance();
