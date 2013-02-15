@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Instagram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-15 15:16+0100\n"
-"PO-Revision-Date: 2013-02-15 15:22+0100\n"
+"POT-Creation-Date: 2013-02-15 15:22+0100\n"
+"PO-Revision-Date: 2013-02-15 15:49+0100\n"
 "Last-Translator: Simon Fransson <simon@dessibelle.se>\n"
 "Language-Team: dessibelle <simon@dessibelle.se>\n"
 "MIME-Version: 1.0\n"
@@ -17,61 +17,61 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: wp-instagram.php:64
+#: ../wp-instagram.php:64
 msgid "Instagram"
 msgstr ""
 
-#: wp-instagram.php:82
+#: ../wp-instagram.php:82
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: wp-instagram.php:93
+#: ../wp-instagram.php:93
 #, php-format
 msgid "%s settings"
 msgstr "%s-inställningar"
 
-#: wp-instagram.php:129
+#: ../wp-instagram.php:129
 msgid "Authorization"
 msgstr "Autentisering"
 
-#: wp-instagram.php:145
+#: ../wp-instagram.php:145
 msgid "Authenticate with instagram"
 msgstr "Autentisera med Instagram"
 
-#: wp-instagram.php:147
+#: ../wp-instagram.php:147
 msgid "Deauthenticate"
 msgstr "Avautentisera"
 
-#: wp-instagram.php:150
+#: ../wp-instagram.php:150
 msgid "Please enter your client ID and client secret before authorizing with Instagram."
 msgstr "Vänligen mata in client ID och client secret för att autentisera med Instagram."
 
-#: wp-instagram.php:154
+#: ../wp-instagram.php:154
 msgid "Client ID"
 msgstr ""
 
-#: wp-instagram.php:163
+#: ../wp-instagram.php:163
 msgid "Client secret"
 msgstr ""
 
-#: wp-instagram.php:172
+#: ../wp-instagram.php:172
 msgid "Access token"
 msgstr ""
 
-#: wp-instagram.php:185
+#: ../wp-instagram.php:185
 msgid "Username"
 msgstr "Användarnamn"
 
-#: wp-instagram.php:195
+#: ../wp-instagram.php:195
 msgid "User ID"
 msgstr "Användar-ID"
 
-#: wp-instagram.php:225
+#: ../wp-instagram.php:225
 #, php-format
 msgid "Instagram API value <code>redirect_uri</code> should be set up to point at <code>%s</code>."
-msgstr "Instagram API-inställningen <code>redirect_uri</code> ska ställas in för att peka på <code>%s</code>."
+msgstr "Instagrams API-inställning <code>redirect_uri</code> ska ställas in för att peka på <code>%s</code>."
 
-#: wp-instagram.php:358
+#: ../wp-instagram.php:358
 msgid "An unknown error occured"
 msgstr "Ett okänt fel inträffade"
 
