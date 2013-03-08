@@ -47,6 +47,11 @@ class WPInstagram {
         add_action('admin_menu', array(&$this, 'admin_menu'));
         add_action('admin_init', array(&$this, 'init_settings'));
 
+        add_action('wp_ajax_my_ajax', array(&$this, 'my_ajax'));
+        add_action('wp_ajax_nopriv_my_ajax', array(&$this, 'my_ajax'));
+        add_action('init', array(&$this, 'setup'));
+
+
         self::$auth_redirect_uri = admin_url('admin.php?page=' . self::$plugin_slug);
     }
 
@@ -72,6 +77,14 @@ class WPInstagram {
         $capability = apply_filters('wpig_required_capability', 'administrator');
 
         return $capability;
+    }
+
+    public function setup()
+    {
+        wp_enqueue_script( 'wp-instagram', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
+        wp_localize_script( 'wp-instagram', 'WPInstagram', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+        ) );
     }
 
     /**
@@ -393,6 +406,20 @@ class WPInstagram {
     public static function instagram_api_url()
     {
         return plugins_url('api/', __FILE__);
+    }
+
+
+    public function my_ajax()
+    {
+        $r = new WP_Ajax_Response(array(
+            'what' => 'hello',
+            'action' => 'poo',
+        ));
+        $r->send();
+
+        header('Content-Type: application/json; charset=utf8');
+        echo json_encode(array('poo' => 'moo'));
+        die();
     }
 }
 
