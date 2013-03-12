@@ -121,9 +121,9 @@ class WPInstagram {
 
         <div class="wrap">
 
-            <div id="icon-options-general" class="icon32"><br></div>
-
+            <?php screen_icon('options-general'); ?>
             <?php //screen_icon(self::$plugin_slug); ?>
+
             <h2><?php printf(__('%s settings', 'wpig'), 'Instagram'); ?></h2>
 
             <form method="post" action="options.php">
@@ -132,8 +132,8 @@ class WPInstagram {
             <div class="tool-box">
             <?php
 
-                do_settings_sections( self::$plugin_slug, self::$plugin_slug );
-                settings_fields( self::$plugin_slug, self::$plugin_slug );
+                do_settings_sections( self::$plugin_slug );
+                settings_fields( self::$plugin_slug );
 
                 submit_button();
             ?>
@@ -397,6 +397,11 @@ class WPInstagram {
                 }
             }
         }
+    }
+
+    public function get_api()
+    {
+        return WPInstagramAPI::withAccessToken(get_option(self::ACCESS_TOKEN_KEY));
     }
 
     /**
