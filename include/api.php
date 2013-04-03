@@ -121,18 +121,18 @@ class WPInstagramAPI {
         return sprintf('https://api.instagram.com/oauth/authorize/?client_id=%s&redirect_uri=%s&response_type=code', urlencode($client_id), urlencode($redirect_uri));
     }
 
-    public function recentPhotosForUser($user_id) {
-        $url = $this->endpointUrl('users/%d/media/recent', array($user_id));
+    public function recentPhotosForUser($user_id, $params = null) {
+        $url = $this->endpointUrl('users/%d/media/recent', array($user_id), $params);
         return json_decode($this->fetchData($url));
     }
 
-    public function recentPhotosForLocation($location_id) {
-        $url = $this->endpointUrl('locations/%d/media/recent', array($location_id));
+    public function recentPhotosForLocation($location_id, $params = null) {
+        $url = $this->endpointUrl('locations/%d/media/recent', array($location_id), $params);
         return json_decode($this->fetchData($url));
     }
 
-    public function recentPhotosForTag($tag) {
-        $url = $this->endpointUrl('tags/%s/media/recent', array($tag));
+    public function recentPhotosForTag($tag, $params = null) {
+        $url = $this->endpointUrl('tags/%s/media/recent', array($tag), $params);
         return json_decode($this->fetchData($url));
     }
 
