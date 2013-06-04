@@ -2,76 +2,276 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Instagram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-15 15:22+0100\n"
-"PO-Revision-Date: 2013-02-15 15:49+0100\n"
+"POT-Creation-Date: 2013-06-04 18:40+0100\n"
+"PO-Revision-Date: 2013-06-04 18:47+0100\n"
 "Last-Translator: Simon Fransson <simon@dessibelle.se>\n"
 "Language-Team: dessibelle <simon@dessibelle.se>\n"
+"Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: __;_e;_x;_n:1,2;_n_noop:1,2;_nx:1,2;_nx_noop:1,2\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-Language: Swedish\n"
-"X-Poedit-Country: SWEDEN\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.5\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../wp-instagram.php:64
+#: ../wp-instagram.php:150
 msgid "Instagram"
 msgstr ""
 
-#: ../wp-instagram.php:82
+#: ../wp-instagram.php:168
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: ../wp-instagram.php:93
+#: ../wp-instagram.php:179
 #, php-format
 msgid "%s settings"
 msgstr "%s-inställningar"
 
-#: ../wp-instagram.php:129
+#: ../wp-instagram.php:221
 msgid "Authorization"
 msgstr "Autentisering"
 
-#: ../wp-instagram.php:145
+#: ../wp-instagram.php:237
 msgid "Authenticate with instagram"
 msgstr "Autentisera med Instagram"
 
-#: ../wp-instagram.php:147
+#: ../wp-instagram.php:239
 msgid "Deauthenticate"
 msgstr "Avautentisera"
 
-#: ../wp-instagram.php:150
-msgid "Please enter your client ID and client secret before authorizing with Instagram."
-msgstr "Vänligen mata in client ID och client secret för att autentisera med Instagram."
+#: ../wp-instagram.php:242
+msgid ""
+"Please enter your client ID and client secret before authorizing with "
+"Instagram."
+msgstr ""
+"Vänligen mata in client ID och client secret för att autentisera med "
+"Instagram."
 
-#: ../wp-instagram.php:154
+#: ../wp-instagram.php:246
 msgid "Client ID"
-msgstr ""
+msgstr "Klient-id"
 
-#: ../wp-instagram.php:163
+#: ../wp-instagram.php:255
 msgid "Client secret"
-msgstr ""
+msgstr "Klientemlighet"
 
-#: ../wp-instagram.php:172
+#: ../wp-instagram.php:264
 msgid "Access token"
-msgstr ""
+msgstr "Åtkomsttoken"
 
-#: ../wp-instagram.php:185
+#: ../wp-instagram.php:277
 msgid "Username"
 msgstr "Användarnamn"
 
-#: ../wp-instagram.php:195
+#: ../wp-instagram.php:287
 msgid "User ID"
 msgstr "Användar-ID"
 
-#: ../wp-instagram.php:225
-#, php-format
-msgid "Instagram API value <code>redirect_uri</code> should be set up to point at <code>%s</code>."
-msgstr "Instagrams API-inställning <code>redirect_uri</code> ska ställas in för att peka på <code>%s</code>."
+#: ../wp-instagram.php:310
+msgid "Filter"
+msgstr "Filter"
 
-#: ../wp-instagram.php:358
+#: ../wp-instagram.php:318
+msgid "Tags, users and locations to import from"
+msgstr "Filtrera taggar, användare och platser"
+
+#: ../wp-instagram.php:325
+#, php-format
+msgid "Separate %s, %s and %s with spaces."
+msgstr "Separera %s, %s och %s med mellanslag."
+
+#: ../wp-instagram.php:326
+msgid "tags"
+msgstr "taggar"
+
+#: ../wp-instagram.php:327
+msgid "users"
+msgstr "användare"
+
+#: ../wp-instagram.php:328
+msgid "location_ids"
+msgstr "plats_idn"
+
+#: ../wp-instagram.php:336
+msgid "Owner of imported photos"
+msgstr "Ägare av importerade foton"
+
+#: ../wp-instagram.php:345
+msgid "Status of imported photos"
+msgstr "Status för importerade foton"
+
+#: ../wp-instagram.php:370
+#, php-format
+msgid ""
+"Instagram API value <code>redirect_uri</code> should be set up to point at "
+"<code>%s</code>."
+msgstr ""
+"Instagrams API-inställning <code>redirect_uri</code> ska ställas in för att "
+"peka på <code>%s</code>."
+
+#: ../wp-instagram.php:515
 msgid "An unknown error occured"
 msgstr "Ett okänt fel inträffade"
 
+#: ../wp-instagram.php:549
+msgid "Image"
+msgstr "Bild"
+
+#: ../wp-instagram.php:550
+msgid "Actions"
+msgstr "Åtgärder"
+
+#: ../wp-instagram.php:555
+msgid "User"
+msgstr "Användare"
+
+#: ../wp-instagram.php:584
+msgid "Publish"
+msgstr "Publicera"
+
+#: ../wp-instagram.php:588
+msgid "Hide"
+msgstr "Dölj"
+
+#: ../wp-instagram.php:620
+msgid "Hidden"
+msgstr "Dolda"
+
+#: ../wp-instagram.php:700
+msgid "Published"
+msgstr ""
+
+#: ../wp-instagram.php:701
+msgid "Privately Published"
+msgstr ""
+
+#: ../wp-instagram.php:702
+msgid "Pending Review"
+msgstr ""
+
+#: ../wp-instagram.php:703
+msgid "Draft"
+msgstr ""
+
+#: ../wp-instagram.php:808
+msgid "Not implemented."
+msgstr "Inte implementerat."
+
+#: ../include/content-types.php:29
+msgid "Instagram images"
+msgstr "Instagrambilder"
+
+#: ../include/content-types.php:30
+msgid "Instagram image"
+msgstr "Instagrambild"
+
+#: ../include/content-types.php:31
+msgid "Instagram posts"
+msgstr "Instagrambilder"
+
+#: ../include/content-types.php:32
+msgid "All images"
+msgstr "Alla bilder"
+
+#: ../include/content-types.php:33
+msgid "Add image"
+msgstr "Lägg till bild"
+
+#: ../include/content-types.php:34
+msgid "Add new image"
+msgstr "Lägg till bild"
+
+#: ../include/content-types.php:35
+msgid "Edit image"
+msgstr "Redigera bild"
+
+#: ../include/content-types.php:36
+msgid "New image"
+msgstr "Ny bild"
+
+#: ../include/content-types.php:37
+msgid "View image"
+msgstr "Visa bild"
+
+#: ../include/content-types.php:38
+msgid "Search images"
+msgstr "Sök bilder"
+
+#: ../include/content-types.php:39
+msgid "No images found"
+msgstr "Inga bilder hittades"
+
+#: ../include/content-types.php:40
+msgid "No images found in trash"
+msgstr "Inga bilder hittades i papperskorgen"
+
+#: ../include/content-types.php:42
+msgid ""
+"Post type used for storing and manaing instagram images downloaded via the "
+"Instagram API."
+msgstr ""
+"Innehållstyp som används för att spara och hantera Instagram-bilder som "
+"hämtas via Instagram-API:et."
+
+#: ../include/content-types.php:72 ../include/content-types.php:74
+msgid "Tags"
+msgstr "Taggar"
+
+#: ../include/content-types.php:73
+msgid "Tag"
+msgstr "Tagg"
+
+#: ../include/content-types.php:75
+msgid "All tags"
+msgstr "Alla taggar"
+
+#: ../include/content-types.php:76
+msgid "Edit tag"
+msgstr "Redigera tagg"
+
+#: ../include/content-types.php:77
+msgid "View tag"
+msgstr "Visa tagg"
+
+#: ../include/content-types.php:78
+msgid "Update tag"
+msgstr "Uppdatera tagg"
+
+#: ../include/content-types.php:79
+msgid "Add new tag"
+msgstr "Lägg till tagg"
+
+#: ../include/content-types.php:80
+msgid "New tag"
+msgstr "Ny tagg"
+
+#: ../include/content-types.php:81
+msgid "Search tags"
+msgstr "Sök bland taggar"
+
+#: ../include/content-types.php:82
+msgid "Popular tags"
+msgstr "Populära taggar"
+
+#: ../include/content-types.php:83
+msgid "Separate tags with commas"
+msgstr "Separera med kommatecken"
+
+#: ../include/content-types.php:84
+msgid "Add or remove tags"
+msgstr "Lägg till eller ta bort taggar"
+
+#: ../include/content-types.php:85
+msgid "Choose from the most used tags"
+msgstr "Välj bland de vanligaste taggarna."
+
+#: ../include/content-types.php:86
+msgid "No tags found."
+msgstr "Inga taggar hittades."
+
+#: ../include/content-types.php:105
+msgid "Image data"
+msgstr "Bilddata"
