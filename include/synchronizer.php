@@ -4,7 +4,7 @@ include_once( dirname(__FILE__) . '/defines.php');
 
 class WPIGSynchronizer {
 
-    const SYNC_TAG_MAX_ID_KEY = 'ls_instagram_tag_max_id';
+    const SYNC_TAG_MAX_ID_KEY = 'wpig_tag_max_id';
     const SYNC_MAX_PAGINATION = 10;
 
     protected $api;
@@ -24,10 +24,9 @@ class WPIGSynchronizer {
             'users' => array(),
             'locations' => array(),
         ) );
+        extract($query);
 
-        if ($tags) {
-            $this->setTags($tags);
-        }
+        $this->setTags($tags);
     }
 
     /**
@@ -171,7 +170,7 @@ class WPIGSynchronizer {
         $id = $image->id;
         $caption = $image->caption->text;
         $created_time = $image->created_time;
-        $guid = sprintf('http://instagram.com/p/%s/' . $id );
+        $guid = sprintf('http://instagram.com/i/%s/', $id );
 
         $tags = $image->tags;
 
@@ -190,15 +189,15 @@ class WPIGSynchronizer {
         $post['post_title'] = $caption;
         $post['comment_status'] = 'closed';
         $post['ping_status'] = 'closed';
-        $post['post_type'] = LSInstagramImage::instance()->typeName();
+        $post['post_type'] = WPIG_IMAGE_TYPE;
         $post['guid'] = $guid;
 
         if (!array_key_exists('post_author', $post)) {
-            $post['post_author'] = LasseStefanz::fan_photo_owner();
+            $post['post_author'] = WPInstagram::photo_owner();
         }
 
         if (!array_key_exists('post_status', $post)) {
-            $post['post_status'] = 'pending';
+            $post['post_status'] = WPInstagram::import_status();
         }
 
         /*

@@ -33,15 +33,16 @@
     background: white;
 
     /* /img/magnify.cur */
-    cursor: url(../../icons/magnify-left.png), url(/wp-content/plugins/lasse-stefanz/icons/magnify-left.png), default;
+    /*cursor: url(../../icons/magnify-left.png), url(/wp-content/plugins/lasse-stefanz/icons/magnify-left.png), default;*/
 }
 
+/*
 @-moz-document url-prefix() {
     .column-instagram_image img  {
         cursor: url(../../icons/magnify-left.png), url(/wp-content/plugins/lasse-stefanz/icons/magnify-left.png), -moz-zoom-in, default;
     }
 }
-
+*/
 .column-instagram_actions {
     width: 80px;
 }

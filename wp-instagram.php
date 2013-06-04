@@ -26,9 +26,9 @@ class WPInstagram {
     const USERNAME_KEY = 'wp_instagram_username';
     const USER_ID_KEY = 'wp_instagram_user_id';
 
-
-    const IMPORT_DIRECTIVES = 'ls_instagram_tags';
-    const IMPORT_OWNER_KEY = 'ls_instagram_instructions';
+    const IMPORT_DIRECTIVES = 'wp_instagram_tags';
+    const IMPORT_OWNER_KEY = 'wp_instagram_instructions';
+    const IMPORT_POST_STATUS = 'wp_instagram_import_post_status';
 
 
     protected static $instance;
@@ -59,16 +59,17 @@ class WPInstagram {
         add_filter( "manage_{$name}_posts_columns", array(&$this, 'manage_posts_columns') );
         add_action( "manage_{$name}_posts_custom_column", array(&$this, 'manage_posts_custom_column'), 10, 2 );
 
-        add_action("wp_ajax_{$name}_publish", array(&$this, 'ajax_change_status'));
-        add_action("wp_ajax_{$name}_trash", array(&$this, 'ajax_change_status'));
+        // add_action("wp_ajax_{$name}_publish", array(&$this, 'ajax_change_status'));
+        // add_action("wp_ajax_{$name}_trash", array(&$this, 'ajax_change_status'));
 
         add_filter("views_edit-{$name}", array(&$this, 'admin_views'));
         add_filter('admin_body_class', array(&$this, 'admin_body_class'));
 
-        add_action('admin_footer', array(&$this, 'setup_instagram'));
-        add_action('wp_ajax_instagram_sync', array(&$this, 'wp_ajax_instagram_sync'));
+        // add_action('admin_footer', array(&$this, 'setup_instagram'));
+        add_action('wp_ajax_instagram_sync', array(__CLASS__, 'wp_ajax_instagram_sync'));
+        add_action('wp_ajax_nopriv_instagram_sync', array(__CLASS__, 'wp_ajax_nopriv_instagram_sync'));
 
-        // add_action('admin_init', array(&$this, 'instagram_debug'));
+        add_action('admin_init', array(&$this, 'instagram_debug'), 20);
 
         self::$auth_redirect_uri = admin_url('admin.php?page=' . self::$plugin_slug);
     }
@@ -77,7 +78,9 @@ class WPInstagram {
     // TODO: Remove this function
     public function instagram_debug()
     {
-        $ig = new LSInstagramDownloader(self::fan_photo_tags());
+        return;
+
+        $ig = new WPIGSynchronizer(self::get_api(), self::filter_symbols_by_type());
         $ig->syncImages();
     }
 
@@ -126,10 +129,14 @@ class WPInstagram {
     {
         WPIGImage::setup_type();
 
-        wp_enqueue_script( 'wp-instagram', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
-        wp_localize_script( 'wp-instagram', 'WPInstagram', array(
-            'ajaxurl' => admin_url('admin-ajax.php'),
-        ) );
+        if (!is_admin() && self::import_status() == 'publish') {
+            wp_enqueue_script( 'wp-instagram', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
+            wp_localize_script( 'wp-instagram', 'WPInstagram', array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+            ) );
+        } else if (is_admin()) {
+            wp_enqueue_script( 'wp-instagram', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
+        }
     }
 
     /**
@@ -204,8 +211,8 @@ class WPInstagram {
      **/
     public function init_settings()
     {
-        wp_enqueue_style( 'wp-instagram', plugins_url( 'admin/css/style.css', __FILE__ ), array(), self::PLUGIN_VERSION );
-
+        wp_enqueue_style( 'wp-instagram.admin', plugins_url( 'admin/css/style.css', __FILE__ ), array(), self::PLUGIN_VERSION );
+        wp_enqueue_script( 'wp-instagram.admin', plugins_url( 'admin/js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
 
         $section_id = self::$plugin_slug . '-auth';
         $settings_section = self::$plugin_slug . 'auth';
@@ -308,14 +315,18 @@ class WPInstagram {
         // Settings field
         add_settings_field(
             self::IMPORT_DIRECTIVES,
-            __('Tags, users and locations to import', 'wpig'),
+            __('Tags, users and locations to import from', 'wpig'),
             array(&$this, 'render_settings_field'),
             $settings_section,
             $section_id,
             array(
                 'field' => self::IMPORT_DIRECTIVES,
                 'type' => 'textarea',
-                'description' => sprintf(__("Separate #tags, @users and loc:123456 with spaces.", 'wpig'), '<span class="code">#</span>')
+                'description' => sprintf(__("Separate %s, %s and %s with spaces.", 'wpig'),
+                    sprintf('<code>@%s</code>', __('tags', 'wpig')),
+                    sprintf('<code>#%s</code>', __('users', 'wpig')),
+                    sprintf('<code>*%s</code>', __('location_ids', 'wpig'))
+                )
             )
         );
 
@@ -328,12 +339,20 @@ class WPInstagram {
             $section_id
         );
 
+        // Settings field
+        add_settings_field(
+            self::IMPORT_POST_STATUS,
+            __('Status of imported photos', 'wpig'),
+            array(&$this, 'instagram_import_status_dropdown'),
+            $settings_section,
+            $section_id
+        );
+
 
         // Register the settings fields
         register_setting($settings_section, self::IMPORT_DIRECTIVES, array(&$this, 'sanitize_tag_list'));
         register_setting($settings_section, self::IMPORT_OWNER_KEY, 'intval');
-
-
+        register_setting($settings_section, self::IMPORT_POST_STATUS, 'strval');
 
     }
 
@@ -503,7 +522,7 @@ class WPInstagram {
         }
     }
 
-    public function get_api()
+    public static function get_api()
     {
         return WPInstagramAPI::withAccessToken(get_option(self::ACCESS_TOKEN_KEY));
     }
@@ -543,14 +562,16 @@ class WPInstagram {
 
     public function manage_posts_custom_column($column_name, $post_id)
     {
+        $image = new WPIGImage($post_id);
+
         if ($column_name == 'instagram_image') {
 
             $attrs = array(
-                'data-url' => "IMAGE URL", //self::getImageURL($post_id, 'low_resolution'),
+                'data-url' => $image->getImageURL(WPIG_IMAGE_SIZE_LOW),
                 'class' => 'instagram-image',
             );
 
-            echo "IMAGE MARKUP"; //self::getImageMarkup($post_id, 'thumbnail', array('width' => 64, 'height' => 64, 'attributes' => $attrs));
+            echo $image->getImageMarkup(WPIG_IMAGE_SIZE_THUMBNAIL, array('width' => 64, 'height' => 64, 'attributes' => $attrs));
         }
 
         if ($column_name == 'instagram_actions') {
@@ -571,7 +592,7 @@ class WPInstagram {
         }
 
         if ($column_name == 'instagram_username') {
-            echo "USER LINK"; //self::getInstagramUserLink($post_id);
+            echo $image->getInstagramUserLink();
         }
     }
 
@@ -609,6 +630,56 @@ class WPInstagram {
      * SETTING ACCESSORS
      * ============================== */
 
+
+    public static function import_status()
+    {
+        return get_option( self::IMPORT_POST_STATUS, "pending" );
+    }
+
+
+    /**
+     * Returns an array of Instagram tags to use for fan photod
+     * @return array Array of tags
+     */
+    public static function filter_symbols()
+    {
+        return self::tag_list_to_array(get_option(self::IMPORT_DIRECTIVES, ''));
+    }
+
+    public static function filter_symbols_by_type()
+    {
+        $symbols = self::filter_symbols();
+
+        $sorted_symbols = array();
+        foreach ($symbols as $symbol) {
+            $initial = $symbol{0};
+            switch ($initial) {
+                case '@':
+                    $sorted_symbols['users'][] = substr($symbol, 1);
+                    break;
+                case '#':
+                    $sorted_symbols['tags'][] = substr($symbol, 1);
+                    break;
+                case '*':
+                    $sorted_symbols['locations'][] = substr($symbol, 1);
+                    break;
+            }
+        }
+
+        return $sorted_symbols;
+    }
+
+    /**
+     * Returns the user ID of the imported photos owner
+     * @return int User id of selected user
+     */
+    public static function photo_owner()
+    {
+        return get_option(self::IMPORT_OWNER_KEY, 1);
+    }
+
+
+
     public static function instagram_import_owner_dropdown()
     {
         wp_dropdown_users(array(
@@ -617,6 +688,24 @@ class WPInstagram {
             'selected' => get_option(self::IMPORT_OWNER_KEY),
         ));
     }
+
+    public static function instagram_import_status_dropdown()
+    {
+
+        $status = self::import_status();
+
+        ?>
+
+        <select name="<?php echo self::IMPORT_POST_STATUS; ?>" id="<?php echo self::IMPORT_POST_STATUS; ?>">
+            <option<?php selected( $status, "publish" ); ?> value="publish"><?php _e("Published") ?></option>
+            <option<?php selected( $status, "private" ); ?> value="publish"><?php _e("Privately Published") ?></option>
+            <option<?php selected( $status, "pending" ); ?> value="pending"><?php _e("Pending Review") ?></option>
+            <option<?php selected( $status, "draft" ); ?> value="draft"><?php _e("Draft") ?></option>
+        </select>
+
+        <?php
+    }
+
 
 
     /**
@@ -629,7 +718,7 @@ class WPInstagram {
         $sanitized_tags = self::tag_list_to_array($tags);
 
         if (count($sanitized_tags)) {
-            $tags = implode(', ', $sanitized_tags);
+            $tags = implode(' ', $sanitized_tags);
         } else {
             $tags = '';
         }
@@ -644,33 +733,24 @@ class WPInstagram {
      */
     public static function tag_list_to_array($taglist)
     {
+        $tags = array();
+
         if (strlen($taglist)) {
-            $taglist = preg_replace('/([^#@][^A-Za-z0-9_]+)+/i', '', $taglist);
-            $tags = array_unique(array_filter(explode(',', $taglist)));
+
+            $symbols = array();
+            preg_match_all('/[@#*][A-Za-z0-9_]+/i', $taglist, $symbols);
+
+            if (count($symbols)) {
+                $tags = array_shift($symbols);
+            }
+
+            // $taglist = preg_replace('/[^A-Za-z0-9_]+/i', '', $taglist);
+            // $tags = array_unique(array_filter(explode(',', $taglist)));
 
             return $tags;
         }
 
-        return array();
-    }
-
-
-    /**
-     * Returns an array of Instagram tags to use for fan photod
-     * @return array Array of tags
-     */
-    public static function fan_photo_tags()
-    {
-        return self::tag_list_to_array(get_option(self::INSTAGRAM_TAGS_KEY));
-    }
-
-    /**
-     * Returns the user ID of the imported photos owner
-     * @return int User id of selected user
-     */
-    public static function fan_photo_owner()
-    {
-        return get_option(self::INSTAGRAM_IMPORT_OWNER_KEY, 1);
+        return $tags;
     }
 
 
@@ -693,11 +773,11 @@ class WPInstagram {
 
             $post = get_post($id);
             switch ($action) {
-                case "{name}_publish":
+                case "{$name}_publish":
                     $post->post_status = 'publish';
                     $modified = true;
                     break;
-                case "{name}_trash":
+                case "{$name}_trash":
                     $post->post_status = 'trash';
                     $modified = true;
                     break;
@@ -706,32 +786,51 @@ class WPInstagram {
             wp_update_post( $post );
         }
 
-        echo json_encode(array('result' => $modified));
+        echo json_encode(array('result' => $modified, 'action' => $action, 'id' => $id));
 
         die();
     }
 
-    public function wp_ajax_instagram_sync($value='')
+    public static function wp_ajax_instagram_sync() {
+        return self::perform_ajax_sync(true);
+    }
+
+    public static function wp_ajax_nopriv_instagram_sync() {
+        return self::perform_ajax_sync(false);
+    }
+
+    protected static function perform_ajax_sync($admin = true)
     {
         header("Content-Type: application/json; charset=utf8");
 
-        if ( false === ( $instagram_api_call = get_transient( 'instagram_api_call' ) ) ) {
-
-            $query = array(
-                'tags' => self::fan_photo_tags(),
+        if (!$admin) {
+            $response = array(
+                'error' => __('Not implemented.', 'wpig'),
+                'instagram_sync' => false,
             );
 
-            $ig = new WPIGSynchronizer($this->api, $query);
-            $ig->syncImages();
-
-            $instagram_api_call = true;
-
-            set_transient( 'instagram_api_call', $instagram_api_call, 10 * MINUTE_IN_SECONDS );
+            echo json_encode($response);
+            die();
         }
 
-        echo json_encode(array(
-            'instagram_sync' => !$instagram_api_call,
-        ));
+        $did_sync = false;
+        if ( false === ( $perform_api_call = get_transient( 'wp_instagram_api_call' ) ) ) {
+
+            $query = self::filter_symbols_by_type();
+
+            $ig = new WPIGSynchronizer(self::get_api(), $query);
+            $ig->syncImages();
+
+            $did_sync = true;
+
+            set_transient( 'wp_instagram_api_call', $perform_api_call, 10 * MINUTE_IN_SECONDS );
+        }
+
+        $response = array(
+            'instagram_sync' => $did_sync,
+        );
+
+        echo json_encode($response);
 
         die();
     }
@@ -746,26 +845,15 @@ class WPInstagram {
 
         if ($post->post_type == WPIG_IMAGE_TYPE) {
 
-            $size = apply_filters( 'ls_instagram_content_image_size', LS_IGIM_SIZE_STANDARD );
+            $size = apply_filters( 'wp_instagram_content_image_size', WPIG_IMAGE_SIZE_STANDARD );
 
-            return "IMAGE MARKUP"; // $this->getImageMarkup($post->ID, $size);
+            $image = new WPIGImage($post);
+            return $image->getImageMarkup($post->ID, $size);
         }
 
         return $content;
     }
 
-    public function setup_instagram()
-    {
-        ?>
-        <script type="text/javascript">
-            var data = {
-                action: 'instagram_sync',
-            };
-
-            jQuery.post(ajaxurl, data, function(response) { return; });
-        </script>
-        <?php
-    }
 }
 
 $wpig = WPInstagram::instance();

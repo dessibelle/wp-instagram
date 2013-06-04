@@ -4,8 +4,11 @@ include_once( dirname(__FILE__) . '/defines.php');
 
 class WPIGImage {
 
-    public function __construct()
+    protected $post;
+
+    public function __construct($post)
     {
+        $this->post = get_post($post);
     }
 
 
@@ -23,8 +26,8 @@ class WPIGImage {
     {
         register_post_type( WPIG_IMAGE_TYPE, apply_filters('wpig_image_type_args', array(
             'labels' => array(
-                'name' => __('Instagram image', 'wpig'), // general name for the post type, usually plural. The same as, and overridden by $post_type_object->label
-                'singular_name' => __('Instagram images', 'wpig'), // name for one object of this post type. Defaults to value of name
+                'name' => __('Instagram images', 'wpig'), // general name for the post type, usually plural. The same as, and overridden by $post_type_object->label
+                'singular_name' => __('Instagram image', 'wpig'), // name for one object of this post type. Defaults to value of name
                 'menu_name' => __('Instagram posts', 'wpig'), // the menu name text. This string is the name to give menu items. Defaults to value of name
                 'all_items' => __('All images', 'wpig'), // the all items text used in the menu. Default is the Name label
                 'add_new' => __('Add image', 'wpig'), // the add new text. The default is Add New for both hierarchical and non-hierarchical types. When internationalizing this string, please use a gettext context matching your post type. Example: _x('Add New', 'product');
@@ -113,22 +116,22 @@ class WPIGImage {
      * ACCESSORS
      * ============================== */
 
-    public static function getImageData($post_id, $size)
+    public function getImageData($size = WPIG_IMAGE_SIZE_STANDARD)
     {
         $data = null;
 
         switch ($size) {
-            case LS_IGIM_SIZE_THUMBNAIL:
+            case WPIG_IMAGE_SIZE_THUMBNAIL:
             case 'thumbnail':
-                $data = get_post_meta( $post_id, LS_IGIM_SIZE_THUMBNAIL, true );
+                $data = get_post_meta( $this->post->ID, WPIG_IMAGE_SIZE_THUMBNAIL, true );
                 break;
-            case LS_IGIM_SIZE_LOW:
+            case WPIG_IMAGE_SIZE_LOW:
             case 'low_resolution':
-                $data = get_post_meta( $post_id, LS_IGIM_SIZE_LOW, true );
+                $data = get_post_meta( $this->post->ID, WPIG_IMAGE_SIZE_LOW, true );
                 break;
-            case LS_IGIM_SIZE_STANDARD:
+            case WPIG_IMAGE_SIZE_STANDARD:
             case 'standard_resolution':
-                $data = get_post_meta( $post_id, LS_IGIM_SIZE_STANDARD, true );
+                $data = get_post_meta( $this->post->ID, WPIG_IMAGE_SIZE_STANDARD, true );
                 break;
         }
 
@@ -140,14 +143,14 @@ class WPIGImage {
     }
 
 
-    public static function getImageMarkup($post_id, $size, $args = null)
+    public function getImageMarkup($size = WPIG_IMAGE_SIZE_STANDARD, $args = null)
     {
-        $data = self::getImageData($post_id, $size);
+        $data = $this->getImageData($size);
 
         if ($data && array_key_exists('url', $data)) {
             $url = $width = $height = $attributes = null;
             extract($data);
-            $alt = get_the_title($post_id);
+            $alt = get_the_title($this->post->ID);
 
             extract((array)$args);
 
@@ -171,9 +174,9 @@ class WPIGImage {
         return null;
     }
 
-    public static function getImageURL($post_id, $size)
+    public function getImageURL($size = WPIG_IMAGE_SIZE_STANDARD)
     {
-        $data = self::getImageData($post_id, $size);
+        $data = $this->getImageData($size);
 
         if ($data && array_key_exists('url', $data)) {
             return $data['url'];
@@ -183,19 +186,19 @@ class WPIGImage {
     }
 
 
-    public static function getInstagramURL($post_id)
+    public function getInstagramURL()
     {
-        return self::optionForKey(LS_IGIM_URL, $post_id);
+        return get_post_meta( $this->post->ID, WPIG_IMAGE_URL, true );
     }
 
-    public static function getInstagramUser($post_id)
+    public function getInstagramUser()
     {
-        return self::optionForKey(LS_IGIM_USERNAME, $post_id);
+        return get_post_meta( $this->post->ID, WPIG_IMAGE_USERNAME, true );
     }
 
-    public static  function getInstagramUserURL($post_id)
+    public  function getInstagramUserURL()
     {
-        $user = self::getInstagramUser($post_id);
+        $user = $this->getInstagramUser();
 
         if ($user) {
             $title = empty($title) ? '@' . $user : $title;
@@ -206,10 +209,10 @@ class WPIGImage {
         return null;
     }
 
-    public static function getInstagramUserLink($post_id, $title = null)
+    public function getInstagramUserLink($title = null)
     {
-        $user = self::getInstagramUser($post_id);
-        $url = self::getInstagramUserURL($post_id);
+        $user = $this->getInstagramUser();
+        $url = $this->getInstagramUserURL();
 
         if ($url) {
 
