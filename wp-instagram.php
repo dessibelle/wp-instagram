@@ -78,10 +78,12 @@ class WPInstagram {
     // TODO: Remove this function
     public function instagram_debug()
     {
-        return;
+        // return;
 
         $ig = new WPIGSynchronizer(self::get_api(), self::filter_symbols_by_type());
         $ig->syncImages();
+
+        die();
     }
 
 
@@ -147,7 +149,7 @@ class WPInstagram {
 
         $capability = $this->required_capability();
 
-        $menu_title = __('Instagram', 'wpig'); //get_bloginfo('name'
+        $menu_title = __('WP Instagram', 'wpig'); //get_bloginfo('name'
         $icon_url = plugins_url('icons/instagram.png', __FILE__);
         add_menu_page( sprintf('%s settings', $menu_title), $menu_title, $capability, self::$plugin_slug, array(&$this, 'admin_menu_page'), $icon_url );
 

@@ -123,6 +123,9 @@ class WPInstagramAPI {
 
     public function recentPhotosForUser($user_id, $params = null) {
         $url = $this->endpointUrl('users/%d/media/recent', array($user_id), $params);
+
+        var_dump($url);
+
         return json_decode($this->fetchData($url));
     }
 
@@ -134,6 +137,36 @@ class WPInstagramAPI {
     public function recentPhotosForTag($tag, $params = null) {
         $url = $this->endpointUrl('tags/%s/media/recent', array($tag), $params);
         return json_decode($this->fetchData($url));
+    }
+
+    public function searchUsersByName($username, $params = null) {
+        $params = wp_parse_args( $params, array(
+            'q' => $username,
+            // 'count' => 10,
+        ) );
+
+        $url = $this->endpointUrl('users/search', null, $params);
+        return json_decode($this->fetchData($url));
+    }
+
+    public function userIdForName($username, $params = null) {
+        $params = wp_parse_args( $params, array(
+            'count' => 1,
+        ) );
+
+        $result = $this->searchUsersByName($username, null, $params);
+
+        if (property_exists($result, 'data')) {
+            $data = $result->data;
+
+            if (count($data)) {
+                $best_hit = array_shift($data);
+
+                return $best_hit->id;
+            }
+        }
+
+        return null;
     }
 
     public function endpointUrl($path, $args = null, $params = null) {
