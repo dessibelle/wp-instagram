@@ -1,0 +1,63 @@
+/* Some icons by Yusuke Kamiyamane (http://p.yusukekamiyamane.com/icons/attribution/). All rights reserved. Licensed under a Creative Commons Attribution 3.0 License. */
+
+
+#menu-posts-instagram_image .wp-menu-image {
+    background: url(../../icons/content-type.png) no-repeat 6px -17px !important;
+}
+
+#menu-posts-instagram_image:hover .wp-menu-image, #menu-posts-instagram_image.wp-has-current-submenu .wp-menu-image {
+    background-position: 6px 7px !important;
+    overflow: hidden;
+}
+
+#menu-posts-instagram_image .wp-menu-image img {
+    display: none;
+}
+
+
+.edit-instagram_image #delete_all {
+    display: none;
+}
+
+.column-instagram_username {
+    width: 120px;
+}
+
+.column-instagram_image {
+    width: 68px;
+}
+
+.column-instagram_image img {
+    padding: 2px;
+    border: 1px solid #ddd;
+    background: white;
+
+    /* /img/magnify.cur */
+    cursor: url(../../icons/magnify-left.png), url(/wp-content/plugins/lasse-stefanz/icons/magnify-left.png), default;
+}
+
+@-moz-document url-prefix() {
+    .column-instagram_image img  {
+        cursor: url(../../icons/magnify-left.png), url(/wp-content/plugins/lasse-stefanz/icons/magnify-left.png), -moz-zoom-in, default;
+    }
+}
+
+.column-instagram_actions {
+    width: 80px;
+}
+
+.column-instagram_actions ul {
+    margin-top: 2px;
+}
+
+.instagram-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    padding: 5px;
+    background: white;
+    -webkit-box-shadow: 0px 0px 5px 0px #555;
+            box-shadow: 0px 0px 5px 0px #555;
+
+}
