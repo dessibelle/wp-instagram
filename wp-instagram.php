@@ -72,6 +72,15 @@ class WPInstagram {
     }
 
 
+    /**
+     * Plugin activation hook
+     * @return void
+     */
+    public function activation_hook()
+    {
+        //
+    }
+
     protected static function required_capability()
     {
         $capability = apply_filters('wpig_required_capability', 'administrator');
