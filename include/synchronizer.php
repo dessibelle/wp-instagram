@@ -266,7 +266,7 @@ class WPIGSynchronizer {
         $meta_data = self::postmetaForImage($image);
 
         $id = $image->id;
-        $caption = property_exists($image, 'caption') && property_exists($image->caption, 'text') ? $image->caption->text : '';
+        $caption = (property_exists($image, 'caption') && property_exists($image->caption, 'text')) ? $image->caption->text : '';
         $created_time = $image->created_time;
         $guid = sprintf('http://instagram.com/i/%s/', $id );
 
