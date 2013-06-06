@@ -78,7 +78,7 @@ class WPInstagram {
     // TODO: Remove this function
     public function instagram_debug()
     {
-        // return;
+        return;
 
         $ig = new WPIGSynchronizer(self::get_api(), self::filter_symbols_by_type());
         $ig->syncImages();

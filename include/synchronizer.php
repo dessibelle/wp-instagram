@@ -153,6 +153,17 @@ class WPIGSynchronizer {
         $symbols = $this->symbolsForEndpoint($endpoint);
         $method = $this->apiMethodForEndpoint($endpoint);
 
+        switch ($endpoint) {
+            case 'tags':
+                $next_max_prop = 'next_max_tag_id';
+                $max_prop = 'max_tag_id';
+                break;
+            default:
+                $next_max_prop = 'next_max_id';
+                $max_prop = 'max_id';
+                break;
+        }
+
         if ($this->api) {
             foreach ($symbols as $symbol) {
 
@@ -171,7 +182,6 @@ class WPIGSynchronizer {
                 $new_max_id = 0;
                 $current_page_max_id = 0;
 
-
                 $result = null;
 
                 $depth = 0;
@@ -179,17 +189,20 @@ class WPIGSynchronizer {
 
                     $params = array();
                     // Check for pagination info
-                    if ($result && property_exists($result, 'pagination') && property_exists($result->pagination, 'next_max_tag_id')) {
-                        $params['max_tag_id'] = $result->pagination->next_max_tag_id;
 
-                        $current_page_max_id = $result->pagination->next_max_tag_id;
+                    if ($result && property_exists($result, 'pagination')) {
 
-                        // Store max tag id
-                        if ($current_page_max_id > $new_max_id) {
-                            $new_max_id = $current_page_max_id;
+                        if (property_exists($result->pagination, $next_max_prop)) {
+                            $params[$max_prop] = $result->pagination->$next_max_prop;
+
+                            $current_page_max_id = $result->pagination->$next_max_prop;
+
+                            // Store max tag id
+                            if ($current_page_max_id > $new_max_id) {
+                                $new_max_id = $current_page_max_id;
+                            }
                         }
                     }
-
 
                     if ($depth == 0 || ($depth > 0 && count($params))) {
                         $result = $this->api->$method($symbol, $params);
@@ -253,7 +266,7 @@ class WPIGSynchronizer {
         $meta_data = self::postmetaForImage($image);
 
         $id = $image->id;
-        $caption = $image->caption->text;
+        $caption = property_exists($image, 'caption') && property_exists($image->caption, 'text') ? $image->caption->text : '';
         $created_time = $image->created_time;
         $guid = sprintf('http://instagram.com/i/%s/', $id );
 
