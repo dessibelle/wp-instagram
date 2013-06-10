@@ -207,10 +207,10 @@ class WPIGSynchronizer {
                     if ($depth == 0 || ($depth > 0 && count($params))) {
                         $result = $this->api->$method($symbol, $params);
 
-                        echo "${symbol}: ${depth}/" . self::SYNC_MAX_PAGINATION . " - ";
-                        print_r($params);
-                        echo "\n${current_page_max_id} / ${new_max_id} / ${last_max_id}";
-                        echo "\n\n";
+                        // echo "${symbol}: ${depth}/" . self::SYNC_MAX_PAGINATION . " - ";
+                        // print_r($params);
+                        // echo "\n${current_page_max_id} / ${new_max_id} / ${last_max_id}";
+                        // echo "\n\n";
 
                         if ($result && property_exists($result, 'data')) {
                             $this->images = array_merge($this->images, $result->data);
@@ -266,7 +266,8 @@ class WPIGSynchronizer {
         $meta_data = self::postmetaForImage($image);
 
         $id = $image->id;
-        $caption = (property_exists($image, 'caption') && property_exists($image->caption, 'text')) ? $image->caption->text : '';
+
+        $caption = (property_exists($image, 'caption') && $image->caption != null && property_exists($image->caption, 'text')) ? $image->caption->text : '';
         $created_time = $image->created_time;
         $guid = sprintf('http://instagram.com/i/%s/', $id );
 
@@ -312,8 +313,6 @@ class WPIGSynchronizer {
         $func = array_key_exists('ID', $post) ? 'wp_update_post' : 'wp_insert_post';
         $post_id = $func( $post );
 
-        var_dump($func);
-
         if ($post_id) {
             // Update tags tags
             wp_set_post_terms( $post_id, $tags, WPIG_IMAGE_TAG, $append = false );
@@ -349,8 +348,6 @@ class WPIGSynchronizer {
         }
 
         wp_defer_term_counting( true );
-
-        var_dump(sprintf("Storing %d images", count($this->images)));
 
         foreach ($this->images as $image) {
             self::storeImage($image);

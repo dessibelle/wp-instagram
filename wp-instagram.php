@@ -4,7 +4,7 @@ Plugin Name: WP Instagram
 Plugin URI: http://dessibelle.se
 Description: WordPress plugin for interacting with the Instagram API
 Author: Simon Fransson
-Version: 1.0b1
+Version: 1.0b2
 Author URI: http://dessibelle.se
 */
 
@@ -12,10 +12,11 @@ include_once( dirname(__FILE__) . '/include/defines.php');
 include_once( dirname(__FILE__) . '/include/api.php');
 include_once( dirname(__FILE__) . '/include/content-types.php');
 include_once( dirname(__FILE__) . '/include/synchronizer.php');
+include_once( dirname(__FILE__) . '/include/template-tags.php');
 
 class WPInstagram {
 
-    const PLUGIN_VERSION = '1.0a2';
+    const PLUGIN_VERSION = '1.0b2';
 
     const SETTINGS_SECTION_KEY = 'wp_instagram';
 
@@ -59,27 +60,27 @@ class WPInstagram {
         add_filter( "manage_{$name}_posts_columns", array(&$this, 'manage_posts_columns') );
         add_action( "manage_{$name}_posts_custom_column", array(&$this, 'manage_posts_custom_column'), 10, 2 );
 
-        // add_action("wp_ajax_{$name}_publish", array(&$this, 'ajax_change_status'));
-        // add_action("wp_ajax_{$name}_trash", array(&$this, 'ajax_change_status'));
+        add_action("wp_ajax_{$name}_publish", array(&$this, 'ajax_change_status'));
+        add_action("wp_ajax_{$name}_trash", array(&$this, 'ajax_change_status'));
 
         add_filter("views_edit-{$name}", array(&$this, 'admin_views'));
         add_filter('admin_body_class', array(&$this, 'admin_body_class'));
+
+        add_filter('the_content', array(__CLASS__, 'the_content'), 1, 10);
 
         // add_action('admin_footer', array(&$this, 'setup_instagram'));
         add_action('wp_ajax_instagram_sync', array(__CLASS__, 'wp_ajax_instagram_sync'));
         add_action('wp_ajax_nopriv_instagram_sync', array(__CLASS__, 'wp_ajax_nopriv_instagram_sync'));
 
-        add_action('admin_init', array(&$this, 'instagram_debug'), 20);
+        // add_action('admin_init', array(&$this, 'force_sync'), 20);
 
         self::$auth_redirect_uri = admin_url('admin.php?page=' . self::$plugin_slug);
     }
 
 
     // TODO: Remove this function
-    public function instagram_debug()
+    public function force_sync()
     {
-        return;
-
         $ig = new WPIGSynchronizer(self::get_api(), self::filter_symbols_by_type());
         $ig->syncImages();
 
@@ -352,7 +353,7 @@ class WPInstagram {
 
 
         // Register the settings fields
-        register_setting($settings_section, self::IMPORT_DIRECTIVES, array(&$this, 'sanitize_tag_list'));
+        register_setting($settings_section, self::IMPORT_DIRECTIVES, array(&$this, 'sanitize_tag_list_setting'));
         register_setting($settings_section, self::IMPORT_OWNER_KEY, 'intval');
         register_setting($settings_section, self::IMPORT_POST_STATUS, 'strval');
 
@@ -708,10 +709,26 @@ class WPInstagram {
         <?php
     }
 
+    /**
+     * Sanitizes the value entered in the instagram tags field,
+     * and clears the update transient if the value changed
+     * @param  string $tags User submitted tag list
+     * @return string       Sanitized tag list
+     */
+    public function sanitize_tag_list_setting($tags)
+    {
+        $tags = $this->sanitize_tag_list($tags);
 
+        $old_tags = self::filter_symbols();
+        if ($tags != implode(" ", $old_tags)) {
+            delete_transient( 'wp_instagram_api_call' );
+        }
+
+        return $tags;
+    }
 
     /**
-     * Sanitizes the value entered in the instagram tags field
+     * Sanitizes the a list of tags
      * @param  string $tags User submitted tag list
      * @return string       Sanitized tag list
      */
@@ -841,7 +858,7 @@ class WPInstagram {
      * FRONT END ADJUSTMENTS
      * ============================== */
 
-    public function the_content($content)
+    public static function the_content($content)
     {
         global $post;
 
@@ -850,7 +867,10 @@ class WPInstagram {
             $size = apply_filters( 'wp_instagram_content_image_size', WPIG_IMAGE_SIZE_STANDARD );
 
             $image = new WPIGImage($post);
-            return $image->getImageMarkup($post->ID, $size);
+
+            return $image->getInstagramURL();
+
+            return $image->getImageMarkup($size);
         }
 
         return $content;

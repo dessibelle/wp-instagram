@@ -123,9 +123,6 @@ class WPInstagramAPI {
 
     public function recentPhotosForUser($user_id, $params = null) {
         $url = $this->endpointUrl('users/%d/media/recent', array($user_id), $params);
-
-        var_dump($url);
-
         return json_decode($this->fetchData($url));
     }
 
