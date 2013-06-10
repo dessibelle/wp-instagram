@@ -1,0 +1,34 @@
+.wp-instagram-images.flexslider figure {
+    position: relative;
+}
+
+.wp-instagram-images.flexslider ul {
+    list-style: none;
+    margin: 0;
+}
+
+.wp-instagram-images.flexslider ul.slides li.slide {
+    margin: 0;
+}
+
+.wp-instagram-images.flexslider figure figcaption {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    color: white;
+    padding: 3%;
+    width: 94%;
+}
+
+.wp-instagram-images.flexslider figure figcaption p {
+    margin: 0 0 0.2em 0;
+}
+
+.wp-instagram-images.flexslider figure figcaption p.wp-instagram-caption {
+    font-weight: bold;
+}
+
+.wp-instagram-images.flexslider figure figcaption p.wp-instagram-time {
+    color: lightgray;
+}

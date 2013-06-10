@@ -17,6 +17,7 @@ include_once( dirname(__FILE__) . '/include/template-tags.php');
 class WPInstagram {
 
     const PLUGIN_VERSION = '1.0b2';
+    const FLEXSLIDER_VERSION = '2.1';
 
     const SETTINGS_SECTION_KEY = 'wp_instagram';
 
@@ -132,13 +133,22 @@ class WPInstagram {
     {
         WPIGImage::setup_type();
 
+        if (!is_admin()) {
+            wp_enqueue_script( 'wpig.flexslider', plugins_url( 'js/flexslider/jquery.flexslider-min.js', __FILE__ ), array('jquery'), self::FLEXSLIDER_VERSION, true );
+            wp_enqueue_style( 'wpig.flexslider', plugins_url( 'js/flexslider/flexslider.css', __FILE__ ), array(), self::FLEXSLIDER_VERSION );
+
+            wp_enqueue_script( 'wpig.main', plugins_url( 'js/wp-instagram.js', __FILE__ ), array('jquery', 'wpig.flexslider'), self::PLUGIN_VERSION, true );
+            wp_enqueue_style( 'wpig.main', plugins_url( 'css/wp-instagram.css', __FILE__ ), array(), self::PLUGIN_VERSION );
+
+        }
+
         if (!is_admin() && self::import_status() == 'publish') {
-            wp_enqueue_script( 'wp-instagram', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
-            wp_localize_script( 'wp-instagram', 'WPInstagram', array(
+            wp_enqueue_script( 'wpig.public', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
+            wp_localize_script( 'wpig.public', 'WPInstagram', array(
                 'ajaxurl' => admin_url('admin-ajax.php'),
             ) );
         } else if (is_admin()) {
-            wp_enqueue_script( 'wp-instagram', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
+            wp_enqueue_script( 'wpig.admin', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
         }
     }
 
