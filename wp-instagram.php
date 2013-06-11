@@ -380,7 +380,9 @@ class WPInstagram {
      **/
     public function auth_section_header()
     {
-        echo wpautop(sprintf(__('Instagram API value <code>redirect_uri</code> should be set up to point at <code>%s</code>.', 'wpig'), self::$auth_redirect_uri));
+        echo wpautop(sprintf(__('%s before you do anything else, then enter your authentication details below. Instagram API value <code>redirect_uri</code> should be set up to point at <code>%s</code>.', 'wpig'),
+            sprintf('<a href="%s">%s</a>', 'http://instagram.com/developer/clients/register/', __('Register your application here', 'wpig')),
+            self::$auth_redirect_uri));
     }
 
 
