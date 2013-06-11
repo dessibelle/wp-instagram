@@ -14,11 +14,14 @@ function wp_instagram_images_shortcode( $atts ) {
         $meta_components = explode(" ", $meta_components);
     }
 
-    return wp_instagram_slider( array_filter( array(
-        'echo' => false,
+    $args = array_filter( array(
         'numberposts' => $numberposts,
         'meta_components' => $meta_components,
-    ) ) );
+    ) );
+    $args['echo'] = false;
+
+
+    return wp_instagram_slider( $args );
 }
 add_shortcode( 'wp_instagram_images', 'wp_instagram_images_shortcode' );
 

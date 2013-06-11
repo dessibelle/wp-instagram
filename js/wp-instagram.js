@@ -5,8 +5,7 @@ jQuery(window).load(function() {
     $('.wp-instagram-images.flexslider').flexslider({
         animation: 'slide',
         smoothHeight: true,
-        // directionNav: false,
-        itemWidth: 306,
+        itemWidth: 306
     });
 
 });
