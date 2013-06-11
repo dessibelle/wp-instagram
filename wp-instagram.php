@@ -181,6 +181,14 @@ class WPInstagram {
             wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
         }
 
+
+        $access_token = get_option(self::ACCESS_TOKEN_KEY);
+        $authenticated = !empty($access_token);
+
+        $active_tab = 'auth';
+        if ($authenticated)
+            $active_tab = array_key_exists('tab', $_GET) ? $_GET['tab'] : 'filter';
+
         ?>
 
 
@@ -191,17 +199,19 @@ class WPInstagram {
 
             <h2><?php printf(__('%s settings', 'wpig'), 'Instagram'); ?></h2>
 
-            <form method="post" action="options.php">
+            <h2 class="nav-tab-wrapper">
+                <a href="?page=<?php echo self::$plugin_slug; ?>&amp;tab=filter" class="nav-tab <?php echo $active_tab == 'filter' ? 'nav-tab-active' : ''; ?>"><?php _e('Filter', 'wpig'); ?></a>
+                <a href="?page=<?php echo self::$plugin_slug; ?>&amp;tab=auth" class="nav-tab <?php echo $active_tab == 'auth' ? 'nav-tab-active' : ''; ?>"><?php _e('Authentication', 'wpig'); ?></a>
+            </h2>
 
+
+            <form method="post" action="options.php">
 
             <div class="tool-box">
             <?php
 
-                do_settings_sections( self::$plugin_slug . 'auth' );
-                settings_fields( self::$plugin_slug  . 'auth' );
-
-                do_settings_sections( self::$plugin_slug . 'filter' );
-                settings_fields( self::$plugin_slug  . 'filter' );
+                do_settings_sections( self::$plugin_slug . $active_tab );
+                settings_fields( self::$plugin_slug  . $active_tab );
 
                 submit_button();
             ?>
