@@ -7,9 +7,6 @@ jQuery(window).load(function() {
         smoothHeight: true,
         // directionNav: false,
         itemWidth: 306,
-        // itemMargin: 0,
-
-
     });
 
 });

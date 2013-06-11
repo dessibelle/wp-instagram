@@ -3,10 +3,22 @@
 include_once(dirname(__FILE__) . '/defines.php');
 
 
-// [bartag foo="foo-value"]
 function wp_instagram_images_shortcode( $atts ) {
 
-    return wp_instagram_slider();
+    extract( shortcode_atts( array(
+            'numberposts' => null,
+            'meta_components' => null,
+        ), $atts ) );
+
+    if ($meta_components) {
+        $meta_components = explode(" ", $meta_components);
+    }
+
+    return wp_instagram_slider( array_filter( array(
+        'echo' => false,
+        'numberposts' => $numberposts,
+        'meta_components' => $meta_components,
+    ) ) );
 }
 add_shortcode( 'wp_instagram_images', 'wp_instagram_images_shortcode' );
 
@@ -16,8 +28,8 @@ function wp_instagram_slider($args = null, $query_args = null) {
     $args = wp_parse_args( $args, array(
         'size' => WPIG_IMAGE_SIZE_LOW,
         'numberposts' => 20,
-        'meta_format' => '%caption %username %date',
-        'echo' => false,
+        'meta_components' => array('caption', 'username', 'date'),
+        'echo' => true,
     ) );
 
     $query_args = wp_parse_args( $query_args, array(
@@ -46,8 +58,8 @@ function wp_instagram_feed($args)
         'list_class' => 'slides',
         'item_class' => 'slide',
         'dateformat' => null,
-        'display_caption' => null,
-        'meta_components' => null,
+        'display_meta' => null,
+        'meta_components' => array(),
         'echo' => false
     ) ) );
     extract($args);
@@ -62,7 +74,7 @@ function wp_instagram_feed($args)
     }
 
     if (count($markup)) {
-        $markup = sprintf('<div class="wp-instagram-images %s"><ul class="%s">%s</ul></div>', esc_attr( $container_class ), esc_attr( $list_class ), implode("", $markup));
+        $markup = sprintf('<div class="wp-instagram-images %s" data-item-width="100"><ul class="%s">%s</ul></div>', esc_attr( $container_class ), esc_attr( $list_class ), implode("", $markup));
 
         if ($echo) {
             echo $markup;
@@ -81,8 +93,8 @@ function wp_instagram_feed_element($post, $args = null)
         $args = wp_parse_args( $args, array(
             'class' => null,
             'date_format' => 'l j F, Y',
-            'display_caption' => true,
-            'meta_components' => array('caption', 'username', 'date'),
+            'display_meta' => true,
+            'meta_components' => array('caption', 'date', 'username'),
             'size' => WPIG_IMAGE_SIZE_LOW,
         ) );
         extract($args);
@@ -96,25 +108,33 @@ function wp_instagram_feed_element($post, $args = null)
                 $markup = sprintf('<a href="%s">%s</a>', esc_attr($ig_url), $markup);
             }
 
-            if ($display_caption && count($meta_components)) {
+            if ($display_meta && count($meta_components)) {
                 $ts = strtotime($post->post_date);
                 $date = date_i18n($date_format, $ts);
                 $isodate = date_i18n('c', $ts);
                 $caption = apply_filters( 'the_title', $post->post_title );
+                $username = $image->getInstagramUser();
 
                 $meta = null;
 
-                if ($caption) {
-                    $meta .= sprintf('<p class="wp-instagram-caption">%s</p>', esc_html($caption));
-                }
-
-                if ($date) {
-                    $meta .= sprintf('<p class="wp-instagram-time"><time datetime="%s">%s</time></p>', esc_attr($isodate), esc_html($date));
-                }
-
-                $username = $image->getInstagramUser();
-                if ($username) {
-                    $meta .= sprintf('<p class="wp-instagram-user"><a href="http://instagram.com/%s">@%s</a></p>', esc_attr($username), esc_html($username));
+                foreach ($meta_components as $m) {
+                    switch ($m) {
+                        case 'caption':
+                            if ($caption) {
+                                $meta .= sprintf('<p class="wp-instagram-caption">%s</p>', esc_html($caption));
+                            }
+                            break;
+                        case 'date':
+                            if ($date) {
+                                $meta .= sprintf('<p class="wp-instagram-time"><time datetime="%s">%s</time></p>', esc_attr($isodate), esc_html($date));
+                            }
+                            break;
+                        case 'username':
+                            if ($username) {
+                                $meta .= sprintf('<p class="wp-instagram-user"><a href="http://instagram.com/%s">@%s</a></p>', esc_attr($username), esc_html($username));
+                            }
+                            break;
+                    }
                 }
 
                 if (!empty($meta)) {
