@@ -11,6 +11,10 @@
     margin: 0 5px 0 0;
 }
 
+.wp-instagram-images.flexslider ul.slides li.slide img {
+    height: auto !important;
+}
+
 .wp-instagram-images.flexslider figure figcaption {
     position: absolute;
     left: 0;
