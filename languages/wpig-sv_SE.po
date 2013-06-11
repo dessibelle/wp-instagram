@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Instagram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-11 11:23+0100\n"
-"PO-Revision-Date: 2013-06-11 11:23+0100\n"
+"POT-Creation-Date: 2013-06-11 13:07+0100\n"
+"PO-Revision-Date: 2013-06-11 13:07+0100\n"
 "Last-Translator: Simon Fransson <simon@dessibelle.se>\n"
 "Language-Team: dessibelle <simon@dessibelle.se>\n"
 "Language: sv_SE\n"
@@ -25,24 +25,33 @@ msgstr ""
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: ../wp-instagram.php:192
+#: ../wp-instagram.php:200
 #, php-format
 msgid "%s settings"
 msgstr "%s-inställningar"
 
-#: ../wp-instagram.php:234
+#: ../wp-instagram.php:203 ../wp-instagram.php:333
+msgid "Filter"
+msgstr "Filter"
+
+#: ../wp-instagram.php:204
+#, fuzzy
+msgid "Authentication"
+msgstr "Autentisering"
+
+#: ../wp-instagram.php:244
 msgid "Authorization"
 msgstr "Autentisering"
 
-#: ../wp-instagram.php:250
+#: ../wp-instagram.php:260
 msgid "Authenticate with instagram"
 msgstr "Autentisera med Instagram"
 
-#: ../wp-instagram.php:252
+#: ../wp-instagram.php:262
 msgid "Deauthenticate"
 msgstr "Avautentisera"
 
-#: ../wp-instagram.php:255
+#: ../wp-instagram.php:265
 msgid ""
 "Please enter your client ID and client secret before authorizing with "
 "Instagram."
@@ -50,60 +59,56 @@ msgstr ""
 "Vänligen mata in klient-id och klienthemlighet för att autentiska med "
 "Instagram."
 
-#: ../wp-instagram.php:259
+#: ../wp-instagram.php:269
 msgid "Client ID"
 msgstr "Klient-id"
 
-#: ../wp-instagram.php:268
+#: ../wp-instagram.php:278
 msgid "Client secret"
 msgstr "Klientemlighet"
 
-#: ../wp-instagram.php:277
+#: ../wp-instagram.php:287
 msgid "Access token"
 msgstr "Åtkomsttoken"
 
-#: ../wp-instagram.php:290
+#: ../wp-instagram.php:300
 msgid "Username"
 msgstr "Användarnamn"
 
-#: ../wp-instagram.php:300
+#: ../wp-instagram.php:310
 msgid "User ID"
 msgstr "Användar-ID"
 
-#: ../wp-instagram.php:323
-msgid "Filter"
-msgstr "Filter"
-
-#: ../wp-instagram.php:331
+#: ../wp-instagram.php:341
 msgid "Tags, users and locations to import from"
 msgstr "Filtrera taggar, användare och platser"
 
-#: ../wp-instagram.php:338
+#: ../wp-instagram.php:348
 #, php-format
 msgid "Separate %s, %s and %s with spaces."
 msgstr "Separera %s, %s och %s med mellanslag."
 
-#: ../wp-instagram.php:339
+#: ../wp-instagram.php:349
 msgid "tags"
 msgstr "taggar"
 
-#: ../wp-instagram.php:340
+#: ../wp-instagram.php:350
 msgid "users"
 msgstr "användare"
 
-#: ../wp-instagram.php:341
+#: ../wp-instagram.php:351
 msgid "location_ids"
 msgstr "plats_idn"
 
-#: ../wp-instagram.php:349
+#: ../wp-instagram.php:359
 msgid "Owner of imported photos"
 msgstr "Ägare av importerade foton"
 
-#: ../wp-instagram.php:358
+#: ../wp-instagram.php:368
 msgid "Status of imported photos"
 msgstr "Status för importerade foton"
 
-#: ../wp-instagram.php:383
+#: ../wp-instagram.php:393
 #, php-format
 msgid ""
 "%s before you do anything else, then enter your authentication details "
@@ -114,55 +119,55 @@ msgstr ""
 "Instagrams API-inställning <code>redirect_uri</code> ska ställas in för att "
 "peka på <code>%s</code>."
 
-#: ../wp-instagram.php:384
+#: ../wp-instagram.php:394
 msgid "Register your application here"
 msgstr "Registrera din applikation här"
 
-#: ../wp-instagram.php:530
+#: ../wp-instagram.php:540
 msgid "An unknown error occured"
 msgstr "Ett okänt fel inträffade"
 
-#: ../wp-instagram.php:564
+#: ../wp-instagram.php:574
 msgid "Image"
 msgstr "Bild"
 
-#: ../wp-instagram.php:565
+#: ../wp-instagram.php:575
 msgid "Actions"
 msgstr "Åtgärder"
 
-#: ../wp-instagram.php:570
+#: ../wp-instagram.php:580
 msgid "User"
 msgstr "Användare"
 
-#: ../wp-instagram.php:599
+#: ../wp-instagram.php:609
 msgid "Publish"
 msgstr "Publicera"
 
-#: ../wp-instagram.php:603
+#: ../wp-instagram.php:613
 msgid "Hide"
 msgstr "Dölj"
 
-#: ../wp-instagram.php:635
+#: ../wp-instagram.php:645
 msgid "Hidden"
 msgstr "Dolda"
 
-#: ../wp-instagram.php:715
+#: ../wp-instagram.php:725
 msgid "Published"
 msgstr ""
 
-#: ../wp-instagram.php:716
+#: ../wp-instagram.php:726
 msgid "Privately Published"
 msgstr ""
 
-#: ../wp-instagram.php:717
+#: ../wp-instagram.php:727
 msgid "Pending Review"
 msgstr ""
 
-#: ../wp-instagram.php:718
+#: ../wp-instagram.php:728
 msgid "Draft"
 msgstr ""
 
-#: ../wp-instagram.php:839
+#: ../wp-instagram.php:849
 msgid "Not implemented."
 msgstr "Inte implementerat."
 
