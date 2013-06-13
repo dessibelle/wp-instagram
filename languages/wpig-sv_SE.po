@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Instagram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-11 13:07+0100\n"
-"PO-Revision-Date: 2013-06-11 13:07+0100\n"
+"POT-Creation-Date: 2013-06-13 13:46+0100\n"
+"PO-Revision-Date: 2013-06-13 13:46+0100\n"
 "Last-Translator: Simon Fransson <simon@dessibelle.se>\n"
 "Language-Team: dessibelle <simon@dessibelle.se>\n"
 "Language: sv_SE\n"
@@ -151,23 +151,23 @@ msgstr "Dölj"
 msgid "Hidden"
 msgstr "Dolda"
 
-#: ../wp-instagram.php:725
+#: ../wp-instagram.php:738
 msgid "Published"
 msgstr ""
 
-#: ../wp-instagram.php:726
+#: ../wp-instagram.php:739
 msgid "Privately Published"
 msgstr ""
 
-#: ../wp-instagram.php:727
+#: ../wp-instagram.php:740
 msgid "Pending Review"
 msgstr ""
 
-#: ../wp-instagram.php:728
+#: ../wp-instagram.php:741
 msgid "Draft"
 msgstr ""
 
-#: ../wp-instagram.php:849
+#: ../wp-instagram.php:862
 msgid "Not implemented."
 msgstr "Inte implementerat."
 
@@ -286,3 +286,7 @@ msgstr "Inga taggar hittades."
 #: ../include/content-types.php:105
 msgid "Image data"
 msgstr "Bilddata"
+
+#: ../include/template-tags.php:106
+msgid "or"
+msgstr "eller"

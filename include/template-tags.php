@@ -8,6 +8,7 @@ function wp_instagram_images_shortcode( $atts ) {
     extract( shortcode_atts( array(
             'numberposts' => null,
             'meta_components' => null,
+            'date_format' => null,
         ), $atts ) );
 
     if ($meta_components) {
@@ -25,7 +26,6 @@ function wp_instagram_images_shortcode( $atts ) {
 }
 add_shortcode( 'wp_instagram_images', 'wp_instagram_images_shortcode' );
 
-
 function wp_instagram_slider($args = null, $query_args = null) {
 
     $args = wp_parse_args( $args, array(
@@ -33,7 +33,11 @@ function wp_instagram_slider($args = null, $query_args = null) {
         'numberposts' => 20,
         'meta_components' => array('caption', 'username', 'date'),
         'echo' => true,
+        'date_format' => 'l j F, Y',
+        'heading' => null,
     ) );
+
+    $args['meta_components'] = array_filter($args['meta_components']);
 
     $query_args = wp_parse_args( $query_args, array(
         'numberposts'   =>    20,
@@ -60,9 +64,10 @@ function wp_instagram_feed($args)
         'container_class' => array('flexslider', 'carousel'),
         'list_class' => 'slides',
         'item_class' => 'slide',
-        'dateformat' => null,
+        'date_format' => 'l j F, Y',
         'display_meta' => null,
-        'meta_components' => array(),
+        'meta_components' => array('caption', 'date', 'username'),
+        'heading' => null,
         'echo' => false
     ) ) );
     extract($args);
@@ -73,11 +78,31 @@ function wp_instagram_feed($args)
 
     $markup = array();
     foreach ($images as $image) {
-        $markup[] = wp_instagram_feed_element($image, array('class' => $item_class));
+        $markup[] = wp_instagram_feed_element($image, $args);
+    }
+
+    if ($heading) {
+
+        $cb = function($m) {
+            $tags = WPInstagram::filter_tags();
+
+            $last = array_pop($tags);
+            $first = implode(", ", $tags);
+
+            if (!empty($first)) {
+                $parts = array($first, __('or', 'wpig'), $last);
+                $last = implode(" ", $parts);
+            }
+
+            return $last;
+        };
+
+        $heading = preg_replace_callback('/\%tags/', $cb, $heading);
+        $heading = sprintf('<h2 class="wp-instagram-heading">%s</h2>', esc_html( $heading ));
     }
 
     if (count($markup)) {
-        $markup = sprintf('<div class="wp-instagram-images %s" data-item-width="100"><ul class="%s">%s</ul></div>', esc_attr( $container_class ), esc_attr( $list_class ), implode("", $markup));
+        $markup = sprintf('%s<div class="wp-instagram-images %s" data-item-width="100"><ul class="%s">%s</ul></div>', $heading, esc_attr( $container_class ), esc_attr( $list_class ), implode("", $markup));
 
         if ($echo) {
             echo $markup;
