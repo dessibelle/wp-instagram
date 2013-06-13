@@ -4,7 +4,7 @@ Plugin Name: WP Instagram
 Plugin URI: http://dessibelle.se
 Description: WordPress plugin for interacting with the Instagram API
 Author: Simon Fransson
-Version: 1.0b4
+Version: 1.0b5
 Author URI: http://dessibelle.se
 */
 
@@ -16,7 +16,7 @@ include_once( dirname(__FILE__) . '/include/template-tags.php');
 
 class WPInstagram {
 
-    const PLUGIN_VERSION = '1.0b4';
+    const PLUGIN_VERSION = '1.0b5';
     const FLEXSLIDER_VERSION = '2.1';
 
     const SETTINGS_SECTION_KEY = 'wp_instagram';
@@ -140,13 +140,14 @@ class WPInstagram {
             wp_enqueue_script( 'wpig.main', plugins_url( 'js/wp-instagram.js', __FILE__ ), array('jquery', 'wpig.flexslider'), self::PLUGIN_VERSION, true );
             wp_enqueue_style( 'wpig.main', plugins_url( 'css/wp-instagram.css', __FILE__ ), array(), self::PLUGIN_VERSION );
 
+            wp_localize_script( 'wpig.main', 'WPInstagram', array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'itemWidth' => apply_filters('wp_instagram_default_content_width', 306),
+            ) );
         }
 
         if (!is_admin() && self::import_status() == 'publish') {
             wp_enqueue_script( 'wpig.public', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
-            wp_localize_script( 'wpig.public', 'WPInstagram', array(
-                'ajaxurl' => admin_url('admin-ajax.php'),
-            ) );
         } else if (is_admin()) {
             wp_enqueue_script( 'wpig.admin', plugins_url( 'js/instagram.js', __FILE__ ), array('jquery'), self::PLUGIN_VERSION, true );
         }

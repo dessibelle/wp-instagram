@@ -7,12 +7,16 @@
     margin: 0;
 }
 
-.wp-instagram-images.flexslider ul.slides li.slide {
+.wp-instagram-images.flexslider ul.slides li {
     margin: 0 5px 0 0;
 }
 
-.wp-instagram-images.flexslider ul.slides li.slide img {
+.wp-instagram-images.flexslider ul.slides li img {
     height: auto !important;
+}
+
+.wp-instagram-images.flexslider figure {
+    overflow: hidden;
 }
 
 .wp-instagram-images.flexslider figure figcaption {
@@ -21,8 +25,8 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 3%;
-    width: 94%;
+    padding: 2% 4%;
+    width: 92%;
 }
 
 .wp-instagram-images.flexslider figure figcaption p {

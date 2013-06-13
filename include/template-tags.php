@@ -2,7 +2,6 @@
 
 include_once(dirname(__FILE__) . '/defines.php');
 
-
 function wp_instagram_images_shortcode( $atts ) {
 
     extract( shortcode_atts( array(
