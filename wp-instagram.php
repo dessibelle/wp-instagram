@@ -4,7 +4,7 @@ Plugin Name: WP Instagram
 Plugin URI: http://dessibelle.se
 Description: WordPress plugin for interacting with the Instagram API
 Author: Simon Fransson
-Version: 1.0b5
+Version: 1.0b6
 Author URI: http://dessibelle.se
 */
 
@@ -869,7 +869,8 @@ class WPInstagram {
         }
 
         $did_sync = false;
-        if ( false === ( $perform_api_call = get_transient( 'wp_instagram_api_call' ) ) ) {
+        $perform_api_call = get_transient( 'wp_instagram_api_call' );
+        if ( empty( $perform_api_call ) ) {
 
             $query = self::filter_symbols_by_type();
 

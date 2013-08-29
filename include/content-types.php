@@ -108,7 +108,7 @@ class WPIGImage {
 
     public static function __render_meta_box($post = null, $metabox = null)
     {
-        echo "POO";
+        return;
     }
 
 
